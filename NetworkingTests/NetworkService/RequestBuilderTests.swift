@@ -12,22 +12,24 @@ import XCTest
 struct StubRequestDataProvider: NetworkRequestDataProvider {
     let path: String
     let type: NetworkRequestType
+    var query: [String : String]
+    var headers: [String : String]
 }
 
 class RequestBuilderTests: XCTestCase {
     
     func testNegativeScenario() {
         let path = ""
-        let stubProvider = StubRequestDataProvider(path: path, type: .get)
+        let stubProvider = StubRequestDataProvider(path: path, type: .get, query: [:], headers: [:])
         let serverURL = ""
         let builder = NetworkRequestConstructor(serverURL: serverURL)
         let request = builder.request(with: stubProvider)
-        XCTAssertNil(request)
+        XCTAssertNotNil(request)
     }
     
     func testGetRequest() {
         let path = "/caltender"
-        let stubProvider = StubRequestDataProvider(path: path, type: .get)
+        let stubProvider = StubRequestDataProvider(path: path, type: .get, query: [:], headers: [:])
         let serverURL = "www.google.com"
         let builder = NetworkRequestConstructor(serverURL: serverURL)
         let request = builder.request(with: stubProvider)
@@ -42,7 +44,7 @@ class RequestBuilderTests: XCTestCase {
     "test": "test"
 }
 """
-        let stubProvider = StubRequestDataProvider(path: path, type: .post(body: bodyResponse))
+        let stubProvider = StubRequestDataProvider(path: path, type: .post(body: bodyResponse), query: [:], headers: [:])
         let serverURL = "www.google.com"
         let builder = NetworkRequestConstructor(serverURL: serverURL)
         let request = builder.request(with: stubProvider)
@@ -58,7 +60,7 @@ class RequestBuilderTests: XCTestCase {
         "test": "test"
     }
     """
-        let stubProvider = StubRequestDataProvider(path: path, type: .patch(body: bodyResponse))
+        let stubProvider = StubRequestDataProvider(path: path, type: .patch(body: bodyResponse), query: [:], headers: [:])
         let serverURL = "www.google.com"
         let builder = NetworkRequestConstructor(serverURL: serverURL)
         let request = builder.request(with: stubProvider)
@@ -69,7 +71,7 @@ class RequestBuilderTests: XCTestCase {
     
     func testDeleteRequest() {
         let path = "/caltender"
-        let stubProvider = StubRequestDataProvider(path: path, type: .delete)
+        let stubProvider = StubRequestDataProvider(path: path, type: .delete, query: [:], headers: [:])
         let serverURL = "www.google.com"
         let builder = NetworkRequestConstructor(serverURL: serverURL)
         let request = builder.request(with: stubProvider)

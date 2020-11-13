@@ -24,4 +24,6 @@ public enum NetworkRequestType {
 public protocol NetworkRequestDataProvider {
     var path: String { get }
     var type: NetworkRequestType  { get }
+    var query: [String: String] { get }
+    var headers: [String: String] { get }
 }

@@ -26,12 +26,18 @@ public class NetworkRequestConstructor: NetworkRequestConfigurator {
     }
     
     public func request(with dataProvider: NetworkRequestDataProvider) -> URLRequest? {
-        let finalURL = serverURL + dataProvider.path
+        var component = URLComponents()
+        component.path = serverURL + dataProvider.path
+        if !dataProvider.query.isEmpty {
+            component.queryItems = dataProvider.query.map { URLQueryItem(name: $0, value: $1) }
+        }
         
-        guard let url = URL(string: finalURL) else { return nil }
+        guard let url = URL(string: component.path) else { return nil }
         
         var request = URLRequest(url: url, cachePolicy: cachePolicy, timeoutInterval: timeout)
         request.httpMethod = dataProvider.type.method
+        request.allHTTPHeaderFields = dataProvider.headers
+        
         switch dataProvider.type {
         case .post(let body), .patch(let body):
             request.httpBody = body.data(using: .utf8)
